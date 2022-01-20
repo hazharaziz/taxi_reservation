@@ -9,6 +9,8 @@ namespace Domain.Entities
 {
     public class TripOptions
     {
+        public long Id { get; set; }
+
         public Address SecondDestination { get; set; }
 
         public bool RoundTrip { get; set; }

@@ -1,11 +1,12 @@
 ﻿using Domain.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
     public class User
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 
@@ -18,5 +19,9 @@ namespace Domain.Entities
         public double Balance { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        public Trip CurrentTripId { get; set; }
+
+        public List<Trip> TripHistory { get; set; }
     }
 }
