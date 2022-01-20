@@ -9,7 +9,7 @@ namespace Domain.Entities
 {
     public class Trip
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public Address Origin { get; set; }
         
