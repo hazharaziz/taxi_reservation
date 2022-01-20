@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
@@ -22,7 +18,7 @@ namespace Domain.Entities
 
             return Math.Sqrt(
                 Math.Pow(this.Latitude - destination.Latitude, 2) +
-                Math.Pow(this.Longitude - destination.Longitude, 2)); 
+                Math.Pow(this.Longitude - destination.Longitude, 2));
         }
     }
 }

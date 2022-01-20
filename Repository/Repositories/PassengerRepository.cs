@@ -3,10 +3,8 @@ using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Repository
+namespace Repository.Repositories
 {
     public class PassengerRepository : IRepository<Passenger>
     {
@@ -17,6 +15,11 @@ namespace Repository
             _passengers = new List<Passenger>();
         }
 
+        public List<Passenger> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public Passenger GetById(long passengerId)
         {
             return _passengers.FirstOrDefault(p => p.Id == passengerId);
@@ -24,14 +27,14 @@ namespace Repository
 
         public void Add(Passenger passenger)
         {
-            _passengers.Add(passenger)
+            _passengers.Add(passenger);
         }
 
         public void Update(Passenger passenger)
         {
             var dbPassenger = _passengers.FirstOrDefault(p => p.Id == passenger.Id);
 
-            if (dbPassenger != null)
+            if (dbPassenger == null)
                 throw new Exception("Passenger does not exist");
 
             dbPassenger = passenger;

@@ -3,24 +3,17 @@ using Domain.Enums;
 using Repository.Interfaces;
 using Service.CalculationStrategies;
 using Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Managers
 {
     public class TripManager
     {
-        private readonly IRepository<Trip> _tripRepository;
         private readonly DriverManager _driverManager;
         private ICalculateStrategy _calculationStrategy;
 
-        public TripManager(IRepository<Trip> tripRepository, DriverManager driverManager)
+        public TripManager(DriverManager driverMananger)
         {
-            _tripRepository = tripRepository;
-            _driverManager = driverManager;
+            _driverManager = driverMananger;
             _calculationStrategy = new AfternoonCalculation();
         }
 
@@ -46,6 +39,20 @@ namespace Service.Managers
 
         public bool EndTrip(Trip trip)
         {
+
+            if (trip.Options.PaymentType == PaymentType.Card)
+            {
+                if (trip.Passenger.Balance < trip.Price)
+                {
+                    return false;
+                }
+                else
+                {
+                    trip.Passenger.Balance -= trip.Price;
+                    trip.Driver.Balance += trip.Price;
+                }
+            }
+
             trip.Status = TripStatus.Ended;
             return true;
         }

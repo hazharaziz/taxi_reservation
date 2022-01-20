@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Repository;
 using Repository.Interfaces;
+using Repository.Repositories;
+using Service;
+using Service.Managers;
 
 namespace API
 {
@@ -22,9 +25,15 @@ namespace API
         {
             services.AddControllers();
 
+            services.AddSingleton<IRepository<User>, UserRepository>();
             services.AddSingleton<IRepository<Passenger>, PassengerRepository>();
             services.AddSingleton<IRepository<Driver>, DriverRepository>();
-            services.AddSingleton<IRepository<Trip>, TripRepository>();
+            services.AddSingleton<ITripRepository, TripRepository>();
+
+            services.AddSingleton<CreditManager>();
+            services.AddSingleton<DriverManager>();
+            services.AddSingleton<TripManager>();
+            services.AddSingleton<MapService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

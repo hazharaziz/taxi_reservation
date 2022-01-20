@@ -3,10 +3,8 @@ using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Repository
+namespace Repository.Repositories
 {
     public class DriverRepository : IRepository<Driver>
     {
@@ -36,7 +34,7 @@ namespace Repository
         {
             var dbDriver = _drivers.FirstOrDefault(d => d.Id == driver.Id);
 
-            if (dbDriver != null)
+            if (dbDriver == null)
                 throw new Exception("Driver does not exist");
 
             dbDriver = driver;
@@ -45,6 +43,6 @@ namespace Repository
         public void Delete(long driverId)
         {
             _drivers = _drivers.Where(d => d.Id == driverId).ToList();
-        } 
+        }
     }
 }
