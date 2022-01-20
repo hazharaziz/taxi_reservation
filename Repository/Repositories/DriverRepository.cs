@@ -17,6 +17,11 @@ namespace Repository
             _drivers = new List<Driver>();
         }
 
+        public List<Driver> GetAll()
+        {
+            return _drivers;
+        }
+
         public Driver GetById(long driverId)
         {
             return _drivers.FirstOrDefault(d => d.Id == driverId);
