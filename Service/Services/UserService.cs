@@ -3,8 +3,6 @@ using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {
@@ -202,6 +200,27 @@ namespace Service.Services
             };
         }
 
+        public List<User> GetAllUsers()
+        {
+            return _users;
+        }
+
+        public List<Driver> GetAllDrivers()
+        {
+            return _users
+                .Where(u => u is Driver)
+                .Select(u => u as Driver)
+                .ToList();
+        }
+
+        public List<Passenger> GetAllPassengers()
+        {
+            return _users
+                .Where(u => u is Passenger)
+                .Select(u => u as Passenger)
+                .ToList();
+        }
+
         public User GetUserById(long userId)
         {
             return _users.FirstOrDefault(u => u.Id == userId);
@@ -225,22 +244,6 @@ namespace Service.Services
                 return user as Passenger;
 
             return null;
-        }
-
-        public List<Driver> GetAllDrivers()
-        {
-            return _users
-                .Where(u => u is Driver)
-                .Select(u => u as Driver)
-                .ToList();
-        }
-
-        public List<Passenger> GetAllPassengers()
-        {
-            return _users
-                .Where(u => u is Passenger)
-                .Select(u => u as Passenger)
-                .ToList();
         }
     }
 }

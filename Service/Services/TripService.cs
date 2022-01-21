@@ -12,15 +12,17 @@ namespace Service.Services
     {
         private List<Trip> _trips;
         private readonly UserService _userService;
-        private readonly DriverService _driverManager;
+        private readonly DriverService _driverService;
+        private readonly CreditService _creditService;
         private ICalculateStrategy _calculationStrategy;
         private long _tripCounter;
 
-        public TripService(UserService userService, DriverService driverMananger)
+        public TripService(UserService userService, DriverService driverService, CreditService creditService)
         {
             _trips = new List<Trip>();
             _userService = userService;
-            _driverManager = driverMananger;
+            _driverService = driverService;
+            _creditService = creditService;
             _calculationStrategy = new AfternoonCalculation();
             _tripCounter = 1;
         }
@@ -28,6 +30,11 @@ namespace Service.Services
         public List<Trip> GetAllTrips()
         {
             return _trips;
+        }
+
+        public Trip GetTripById(long tripId)
+        {
+            return _trips.FirstOrDefault(t => t.Id == tripId);
         }
 
         public Trip RequestTrip(long passengerId, Address origin, Address destination)
@@ -52,46 +59,78 @@ namespace Service.Services
                 $"{origin.Description} to {destination.Description}");
 
             _trips.Add(trip);
-            _driverManager.NotifyAllDrivers(trip);
+            _driverService.NotifyAllDrivers(trip);
 
             return trip;
         }
 
-        public bool EndTrip(Trip trip)
+        public void PayTripPrice(long tripId, long passengerId)
         {
+            var trip = GetTripById(tripId);
+            var passenger = _userService.GetPassengerById(passengerId);
 
-            if (trip.Options.PaymentType == PaymentType.Card)
+            if (trip == null)
+                throw new Exception("Trip does not exist");
+
+            if (passenger == null)
+                throw new Exception("Passenger does not exist");
+
+            if (trip.Passenger.Id != passenger.Id)
+                throw new Exception("This passenger is not allowed to pay this trip's price");
+
+            if (trip.Options.PaymentType == PaymentType.Cash)
+                return;
+
+            if (passenger.Balance < trip.Price)
             {
-                if (trip.Passenger.Balance < trip.Price)
-                {
-                    return false;
-                }
-                else
-                {
-                    trip.Passenger.Balance -= trip.Price;
-                    trip.Driver.Balance += trip.Price;
-                }
+                _creditService.Deposit(passenger.Id, trip.Price);
             }
+
+            passenger.Balance -= trip.Price;
+            trip.Driver.Balance += trip.Price;
+            trip.Status = TripStatus.PaidByCard;
+        }
+
+        public void EndTrip(long tripId, long driverId)
+        {
+            var trip = GetTripById(tripId);
+            var driver = _userService.GetDriverById(driverId);
+
+            if (trip == null)
+                throw new Exception("Trip does not exist");
+
+            if (driver == null)
+                throw new Exception("Driver does not exist");
+
+            if (trip.Driver.Id != driver.Id)
+                throw new Exception("This driver is not allowed to end this trip");
+
+            if (trip.Status != TripStatus.PaidByCard &&
+                trip.Options.PaymentType == PaymentType.Card)
+                throw new Exception("Trip must be settled first!");
 
             trip.Status = TripStatus.Ended;
 
             Console.WriteLine($"Driver {trip.Driver.Name} ended the trip!");
-
-            return true;
         }
 
-        public bool CancelTrip(long userId, Trip trip)
+        public void CancelTrip(long tripId, long userId)
         {
+            var trip = GetTripById(tripId);
             var user = _userService.GetUserById(userId);
+
+            if (trip == null)
+                throw new Exception("Trip does not exist");
 
             if (user == null)
                 throw new Exception("User does not exist");
 
+            if (trip.Passenger.Id != user.Id || trip.Driver.Id != user.Id)
+                throw new Exception($"This user is not allowed to cancel this trip {trip.Id}");
+
             trip.Status = TripStatus.Canceled;
 
             Console.WriteLine($"{user.Name} canceled the trip!");
-
-            return true;
         }
 
         public void SetCalculationStrategy(ICalculateStrategy newCalculationStrategy)

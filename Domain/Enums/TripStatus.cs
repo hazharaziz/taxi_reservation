@@ -5,6 +5,7 @@
         Pending,
         OnTheWay,
         Ended,
-        Canceled
+        Canceled,
+        PaidByCard
     }
 }

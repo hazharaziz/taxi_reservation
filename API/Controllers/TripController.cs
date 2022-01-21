@@ -1,11 +1,7 @@
 ﻿using Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -20,14 +16,68 @@ namespace API.Controllers
             _tripService = tripService;
         }
 
+        [HttpGet]
+        public JsonResult GetAllTrips()
+        {
+            return new JsonResult(_tripService.GetAllTrips());
+        }
+
+        [HttpGet("{tripId}")]
+        public JsonResult GetAllTrips(int tripId)
+        {
+            return new JsonResult(_tripService.GetTripById(tripId));
+        }
 
         [HttpPost("request")]
         public JsonResult RequestTrip([FromBody] TripRequest tripRequest)
         {
             try
             {
-                var trip = _tripService.RequestTrip(tripRequest.Passenger, tripRequest.Origin, tripRequest.Destination);
+                var trip = _tripService
+                    .RequestTrip(tripRequest.PassengerId, tripRequest.Origin, tripRequest.Destination);
                 return new JsonResult(trip);
+            }
+            catch (Exception exception)
+            {
+                return new JsonResult(new { error = exception.Message });
+            }
+        }
+
+        [HttpPost("pay/{tripId}")]
+        public JsonResult PayTripPrice(int tripId, [FromQuery] long passengerId)
+        {
+            try
+            {
+                _tripService.PayTripPrice(tripId, passengerId);
+                return new JsonResult(new { message = "Trip price paid successfully!" });
+            }
+            catch (Exception exception)
+            {
+                return new JsonResult(new { error = exception.Message });
+            }
+        }
+
+        [HttpPost("end/{tripId}")]
+        public JsonResult EndTrip(int tripId, [FromQuery] long driverId)
+        {
+            try
+            {
+                _tripService.EndTrip(tripId, driverId);
+                return new JsonResult(new { message = "Trip ended successfully!" });
+            }
+            catch (Exception exception)
+            {
+                return new JsonResult(new { error = exception.Message });
+            }
+        }
+
+        [HttpPost("cancel/{tripId}")]
+        public JsonResult CancelTrip(int tripId, [FromQuery] long userId)
+        {
+            try
+            {
+                _tripService.CancelTrip(tripId, userId);
+                return new JsonResult(new { message = "Trip canceled successfully!" });
             }
             catch (Exception exception)
             {
@@ -52,7 +102,7 @@ namespace API.Controllers
 
     public class TripRequest
     {
-        public Passenger Passenger { get; set; }
+        public long PassengerId { get; set; }
 
         public Address Origin { get; set; }
 

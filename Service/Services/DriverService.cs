@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace Service.Services
         public void NotifyAllDrivers(Trip trip)
         {
             var closestDrivers = FindClosestDrivers(trip.Origin);
-            
+
             Console.WriteLine("Notify closest drivers about this trip");
 
             foreach (var driver in closestDrivers)
