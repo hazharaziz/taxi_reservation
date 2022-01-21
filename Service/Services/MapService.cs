@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using System;
 
-namespace Service
+namespace Service.Services
 {
     public class MapService
     {

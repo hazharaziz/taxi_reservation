@@ -7,7 +7,7 @@ namespace Domain.Entities
     {
         public CarType Car { get; set; }
 
-        public string UserId { get; set; }
+        public string VehicleId { get; set; }
 
         public Address CurrentLocation { get; set; }
 

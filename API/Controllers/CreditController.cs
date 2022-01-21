@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interfaces;
-using Service.Managers;
+using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +14,18 @@ namespace API.Controllers
     [ApiController]
     public class CreditController : ControllerBase
     {
-        private readonly IRepository<User> _userRepository;
-        private readonly CreditManager _creditManager;
+        private readonly CreditService _creditManager;
 
-        public CreditController(IRepository<User> userRepository, CreditManager creditManager)
+        public CreditController(CreditService creditManager)
         {
-            _userRepository = userRepository;
             _creditManager = creditManager;
         }
 
         [HttpPut("deposit/{userId}")]
         public User DepositMoney(int userId, [FromBody] Credit credit)
         {
-            var deposited = _creditManager.Deposit(userId, credit.Amount);
-            return _userRepository.GetById(userId);
+            var user = _creditManager.Deposit(userId, credit.Amount);
+            return user;
         }
 
         [HttpPut("withdraw/{userId}")]
@@ -35,8 +33,8 @@ namespace API.Controllers
         {
             try
             {
-                var withdrawn = _creditManager.Withdraw(userId, credit.Amount, credit.CardNumber);
-                return new JsonResult(_userRepository.GetById(userId));
+                var user = _creditManager.Withdraw(userId, credit.Amount, credit.CardNumber);
+                return new JsonResult(user);
             }
             catch (Exception exception)
             {

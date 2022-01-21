@@ -1,17 +1,16 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
-using Repository.Interfaces;
 using Service.CalculationStrategies;
 using Service.Interfaces;
 
-namespace Service.Managers
+namespace Service.Services
 {
-    public class TripManager
+    public class TripService
     {
-        private readonly DriverManager _driverManager;
+        private readonly DriverService _driverManager;
         private ICalculateStrategy _calculationStrategy;
 
-        public TripManager(DriverManager driverMananger)
+        public TripService(DriverService driverMananger)
         {
             _driverManager = driverMananger;
             _calculationStrategy = new AfternoonCalculation();

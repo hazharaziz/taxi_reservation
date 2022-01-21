@@ -8,7 +8,7 @@ using Repository;
 using Repository.Interfaces;
 using Repository.Repositories;
 using Service;
-using Service.Managers;
+using Service.Services;
 
 namespace API
 {
@@ -25,14 +25,10 @@ namespace API
         {
             services.AddControllers();
 
-            services.AddSingleton<IRepository<User>, UserRepository>();
-            services.AddSingleton<IRepository<Passenger>, PassengerRepository>();
-            services.AddSingleton<IRepository<Driver>, DriverRepository>();
-            services.AddSingleton<ITripRepository, TripRepository>();
-
-            services.AddSingleton<CreditManager>();
-            services.AddSingleton<DriverManager>();
-            services.AddSingleton<TripManager>();
+            services.AddSingleton<UserService>();
+            services.AddSingleton<CreditService>();
+            services.AddSingleton<DriverService>();
+            services.AddSingleton<TripService>();
             services.AddSingleton<MapService>();
         }
 
