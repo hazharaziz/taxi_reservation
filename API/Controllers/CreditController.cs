@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repository.Interfaces;
 using Service.Services;
 using System;
 using System.Collections.Generic;
@@ -22,10 +21,18 @@ namespace API.Controllers
         }
 
         [HttpPut("deposit/{userId}")]
-        public User DepositMoney(int userId, [FromBody] Credit credit)
+        public JsonResult DepositMoney(int userId, [FromBody] Credit credit)
         {
-            var user = _creditManager.Deposit(userId, credit.Amount);
-            return user;
+            try
+            {
+                var user = _creditManager.Deposit(userId, credit.Amount);
+                return new JsonResult(user);
+            }
+            catch (Exception exception)
+            {
+                return new JsonResult(new { error = exception.Message });
+            }
+
         }
 
         [HttpPut("withdraw/{userId}")]

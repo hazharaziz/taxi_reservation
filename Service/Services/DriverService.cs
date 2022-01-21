@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,56 +8,33 @@ namespace Service.Services
 {
     public class DriverService
     {
-        private List<Driver> _drivers;
+        private readonly UserService _userService;
 
-        public DriverService()
+        public DriverService(UserService userService)
         {
-            _drivers = new List<Driver>()
-            {
-                new Driver()
-                {
-                    Id = 1,
-                    Car = CarType.BlueNisan,
-                    CurrentLocation = new Address()
-                    {
-                        Latitude = 10,
-                        Longitude = 20,
-                        Description = "New York"
-                    }
-                },
-                new Driver()
-                {
-                    Id = 3,
-                    Car = CarType.Peikan,
-                    CurrentLocation = new Address()
-                    {
-                        Latitude = 20,
-                        Longitude = 40,
-                        Description = "Los Angles"
-                    }
-                }
-            };
+            _userService = userService;
         }
 
-        public Driver FindDriver(Trip trip)
+        public void NotifyAllDrivers(Trip trip)
         {
             var closestDrivers = FindClosestDrivers(trip.Origin);
+            
+            Console.WriteLine("Notify closest drivers about this trip");
 
             foreach (var driver in closestDrivers)
             {
-                var response = driver.RespondTripRequest(trip);
-                if (response)
-                    return driver;
+                Console.WriteLine($"Driver {driver.Name} notified!");
             }
-
-            return null;
         }
 
         private List<Driver> FindClosestDrivers(Address originAddress)
         {
-            var closestDrivers = _drivers
+            Console.WriteLine("Finding closest drivers ... ");
+
+            var closestDrivers = _userService
+                .GetAllDrivers()
                 .OrderBy(d => d.CurrentLocation.CalculateDistance(originAddress))
-                .Take(10)
+                .Take(2)
                 .ToList();
 
             return closestDrivers;

@@ -2,6 +2,7 @@
 {
     public enum TripStatus
     {
+        Pending,
         OnTheWay,
         Ended,
         Canceled

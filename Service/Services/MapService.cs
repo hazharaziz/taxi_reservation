@@ -5,10 +5,10 @@ namespace Service.Services
 {
     public class MapService
     {
-        public Address Search(string text)
+        public static Address Search(string text)
         {
-            var lat = new Random().Next(1000);
-            var lng = new Random().Next(1000);
+            var lat = new Random().Next(-100, 100);
+            var lng = new Random().Next(-100, 100);
 
             return new Address()
             {

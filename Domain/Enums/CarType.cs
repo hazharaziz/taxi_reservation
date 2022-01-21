@@ -7,6 +7,7 @@
         Peugeot,
         BlueNisan,
         Renault,
-        Peikan
+        YouthsPeikan,
+        PK
     }
 }
