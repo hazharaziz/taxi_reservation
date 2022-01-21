@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Repository.Interfaces;
+using System;
 using System.Threading;
 
 namespace Service.Managers
@@ -15,21 +16,30 @@ namespace Service.Managers
 
         public bool Deposit(long userId, double amount)
         {
+            Console.WriteLine("Waiting for bank API to deposit the money");
+            Thread.Sleep(500);
+
             var user = _userRepository.GetById(userId);
             user.Balance += amount;
 
-            // fake bank api delay
-            Thread.Sleep(500);
+            Console.WriteLine($"{amount} deposited in {user.Name}'s balance");
+
             return true;
         }
 
         public bool Withdraw(long userId, double amount, string cardNumber)
         {
+            if (cardNumber == null)
+                throw new Exception("Card number not provided!");
+
+            Console.WriteLine("Waiting for bank API to withdraw the money");
+            Thread.Sleep(500);
+
             var user = _userRepository.GetById(userId);
             user.Balance -= amount;
-            
-            // fake bank api delay
-            Thread.Sleep(500);
+
+            Console.WriteLine($"{amount} Withdrawn from {user.Name}'s balance");
+
             return true;
         }
     }

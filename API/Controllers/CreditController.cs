@@ -23,11 +23,31 @@ namespace API.Controllers
             _creditManager = creditManager;
         }
 
-        [HttpPost("deposit/{id}")]
-        public User DepositMoney(int id, [FromBody] double amount)
+        [HttpPut("deposit/{userId}")]
+        public User DepositMoney(int userId, [FromBody] Credit credit)
         {
-            var deposited = _creditManager.Deposit(id, amount);
-            return _userRepository.GetById(id);
+            var deposited = _creditManager.Deposit(userId, credit.Amount);
+            return _userRepository.GetById(userId);
         }
+
+        [HttpPut("withdraw/{userId}")]
+        public JsonResult WithdrawMoney(int userId, [FromBody] Credit credit)
+        {
+            try
+            {
+                var withdrawn = _creditManager.Withdraw(userId, credit.Amount, credit.CardNumber);
+                return new JsonResult(_userRepository.GetById(userId));
+            }
+            catch (Exception exception)
+            {
+                return new JsonResult(new { error = exception.Message });
+            }
+        }
+    }
+
+    public class Credit
+    {
+        public double Amount { get; set; }
+        public string CardNumber { get; set; }
     }
 }

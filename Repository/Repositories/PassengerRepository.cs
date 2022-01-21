@@ -17,7 +17,7 @@ namespace Repository.Repositories
 
         public List<Passenger> GetAll()
         {
-            throw new NotImplementedException();
+            return _passengers;
         }
 
         public Passenger GetById(long passengerId)
