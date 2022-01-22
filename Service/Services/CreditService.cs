@@ -6,11 +6,11 @@ namespace Service.Services
 {
     public class CreditService
     {
-        private readonly UserService _userService;
+        private readonly UserService userService;
 
         public CreditService(UserService userService)
         {
-            _userService = userService;
+            this.userService = userService;
         }
 
         public User Deposit(long userId, double amount)
@@ -18,7 +18,7 @@ namespace Service.Services
             Console.WriteLine("Waiting for bank API to deposit the money");
             Thread.Sleep(500);
 
-            var user = _userService.GetUserById(userId);
+            var user = userService.GetUserById(userId);
 
             if (user == null)
                 throw new Exception("User does not exist");
@@ -38,7 +38,7 @@ namespace Service.Services
             Console.WriteLine("Waiting for bank API to withdraw the money");
             Thread.Sleep(500);
 
-            var user = _userService.GetUserById(userId);
+            var user = userService.GetUserById(userId);
 
             if (user == null)
                 throw new Exception("User does not exist");

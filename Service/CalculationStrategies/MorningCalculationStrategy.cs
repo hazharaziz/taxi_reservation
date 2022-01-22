@@ -3,11 +3,11 @@ using Service.Interfaces;
 
 namespace Service.CalculationStrategies
 {
-    class AfternoonCalculation : ICalculateStrategy
+    class MorningCalculationStrategy : ICalculateStrategy
     {
         public double CalculatePrice(Address source, Address destination)
         {
-            return 10000;
+            return 2000;
         }
     }
 }

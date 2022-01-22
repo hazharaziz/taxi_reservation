@@ -10,43 +10,43 @@ namespace Service.Services
 {
     public class TripService
     {
-        private List<Trip> _trips;
-        private readonly UserService _userService;
-        private readonly DriverService _driverService;
-        private readonly CreditService _creditService;
-        private ICalculateStrategy _calculationStrategy;
-        private long _tripCounter;
+        private List<Trip> trips;
+        private readonly UserService userService;
+        private readonly DriverService driverService;
+        private readonly CreditService creditService;
+        private ICalculateStrategy calculationStrategy;
+        private long tripCounter;
 
         public TripService(UserService userService, DriverService driverService, CreditService creditService)
         {
-            _trips = new List<Trip>();
-            _userService = userService;
-            _driverService = driverService;
-            _creditService = creditService;
-            _calculationStrategy = new AfternoonCalculation();
-            _tripCounter = 1;
+            trips = new List<Trip>();
+            this.userService = userService;
+            this.driverService = driverService;
+            this.creditService = creditService;
+            calculationStrategy = new AfternoonCalculationStrategy();
+            tripCounter = 1;
         }
 
         public List<Trip> GetAllTrips()
         {
-            return _trips;
+            return trips;
         }
 
         public Trip GetTripById(long tripId)
         {
-            return _trips.FirstOrDefault(t => t.Id == tripId);
+            return trips.FirstOrDefault(t => t.Id == tripId);
         }
 
         public Trip RequestTrip(long passengerId, Address origin, Address destination)
         {
-            var passenger = _userService.GetPassengerById(passengerId);
+            var passenger = userService.GetPassengerById(passengerId);
 
             if (passenger == null)
                 throw new Exception("Passenger does not exist");
 
             var trip = new Trip()
             {
-                Id = _tripCounter++,
+                Id = tripCounter++,
                 Origin = origin,
                 Destination = destination,
                 Passenger = passenger,
@@ -56,14 +56,14 @@ namespace Service.Services
                 }
             };
 
-            trip.Price = _calculationStrategy.CalculatePrice(origin, destination);
+            trip.Price = calculationStrategy.CalculatePrice(origin, destination);
             trip.Status = TripStatus.Pending;
 
             Console.WriteLine($"Passenger {passenger.Name} requested a trip from " +
                 $"{origin.Description} to {destination.Description}");
 
-            _trips.Add(trip);
-            _driverService.NotifyAllDrivers(trip);
+            trips.Add(trip);
+            driverService.NotifyAllDrivers(trip);
 
             return trip;
         }
@@ -71,7 +71,7 @@ namespace Service.Services
         public void PayTripPrice(long tripId, long passengerId)
         {
             var trip = GetTripById(tripId);
-            var passenger = _userService.GetPassengerById(passengerId);
+            var passenger = userService.GetPassengerById(passengerId);
 
             if (trip == null)
                 throw new Exception("Trip does not exist");
@@ -90,7 +90,7 @@ namespace Service.Services
 
             if (passenger.Balance < trip.Price)
             {
-                _creditService.Deposit(passenger.Id, trip.Price);
+                creditService.Deposit(passenger.Id, trip.Price);
             }
 
             passenger.Balance -= trip.Price;
@@ -101,7 +101,7 @@ namespace Service.Services
         public void EndTrip(long tripId, long driverId)
         {
             var trip = GetTripById(tripId);
-            var driver = _userService.GetDriverById(driverId);
+            var driver = userService.GetDriverById(driverId);
 
             if (trip == null)
                 throw new Exception("Trip does not exist");
@@ -124,7 +124,7 @@ namespace Service.Services
         public void CancelTrip(long tripId, long userId)
         {
             var trip = GetTripById(tripId);
-            var user = _userService.GetUserById(userId);
+            var user = userService.GetUserById(userId);
 
             if (trip == null)
                 throw new Exception("Trip does not exist");
@@ -142,13 +142,13 @@ namespace Service.Services
 
         public void SetCalculationStrategy(ICalculateStrategy newCalculationStrategy)
         {
-            _calculationStrategy = newCalculationStrategy;
+            calculationStrategy = newCalculationStrategy;
         }
 
         public Trip AssignDriverToTrip(long tripId, long driverId)
         {
-            var trip = _trips.FirstOrDefault(t => t.Id == tripId);
-            var driver = _userService.GetDriverById(driverId);
+            var trip = trips.FirstOrDefault(t => t.Id == tripId);
+            var driver = userService.GetDriverById(driverId);
 
             if (trip == null)
                 throw new Exception("Trip does not exists");

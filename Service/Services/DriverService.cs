@@ -7,11 +7,11 @@ namespace Service.Services
 {
     public class DriverService
     {
-        private readonly UserService _userService;
+        private readonly UserService userService;
 
         public DriverService(UserService userService)
         {
-            _userService = userService;
+            this.userService = userService;
         }
 
         public void NotifyAllDrivers(Trip trip)
@@ -30,7 +30,7 @@ namespace Service.Services
         {
             Console.WriteLine("Finding closest drivers ... ");
 
-            var closestDrivers = _userService
+            var closestDrivers = userService
                 .GetAllDrivers()
                 .OrderBy(d => d.CurrentLocation.CalculateDistance(originAddress))
                 .Take(2)

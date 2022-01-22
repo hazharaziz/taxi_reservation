@@ -24,7 +24,6 @@ namespace API
             services.AddSingleton<CreditService>();
             services.AddSingleton<DriverService>();
             services.AddSingleton<TripService>();
-            services.AddSingleton<MapService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

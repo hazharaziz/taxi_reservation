@@ -8,11 +8,11 @@ namespace Service.Services
 {
     public class UserService
     {
-        private List<User> _users;
+        private List<User> users;
 
         public UserService()
         {
-            _users = new List<User>()
+            users = new List<User>()
             {
                 new Driver()
                 {
@@ -202,12 +202,12 @@ namespace Service.Services
 
         public List<User> GetAllUsers()
         {
-            return _users;
+            return users;
         }
 
         public List<Driver> GetAllDrivers()
         {
-            return _users
+            return users
                 .Where(u => u is Driver)
                 .Select(u => u as Driver)
                 .ToList();
@@ -215,7 +215,7 @@ namespace Service.Services
 
         public List<Passenger> GetAllPassengers()
         {
-            return _users
+            return users
                 .Where(u => u is Passenger)
                 .Select(u => u as Passenger)
                 .ToList();
@@ -223,7 +223,7 @@ namespace Service.Services
 
         public User GetUserById(long userId)
         {
-            return _users.FirstOrDefault(u => u.Id == userId);
+            return users.FirstOrDefault(u => u.Id == userId);
         }
 
         public Driver GetDriverById(long driverId)
