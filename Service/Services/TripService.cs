@@ -49,7 +49,11 @@ namespace Service.Services
                 Id = _tripCounter++,
                 Origin = origin,
                 Destination = destination,
-                Passenger = passenger
+                Passenger = passenger,
+                Options = new TripOptions()
+                {
+                    PaymentType = PaymentType.Card
+                }
             };
 
             trip.Price = _calculationStrategy.CalculatePrice(origin, destination);
@@ -77,6 +81,9 @@ namespace Service.Services
 
             if (trip.Passenger.Id != passenger.Id)
                 throw new Exception("This passenger is not allowed to pay this trip's price");
+
+            if (trip.Status == TripStatus.Canceled)
+                throw new Exception("Trip is canceled!");
 
             if (trip.Options.PaymentType == PaymentType.Cash)
                 return;

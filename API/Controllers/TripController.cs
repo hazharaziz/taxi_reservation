@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{tripId}")]
-        public JsonResult GetAllTrips(int tripId)
+        public JsonResult GetTripById(int tripId)
         {
             return new JsonResult(_tripService.GetTripById(tripId));
         }
@@ -43,7 +43,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("pay/{tripId}")]
+        [HttpPut("pay/{tripId}")]
         public JsonResult PayTripPrice(int tripId, [FromQuery] long passengerId)
         {
             try
@@ -57,7 +57,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("end/{tripId}")]
+        [HttpPut("end/{tripId}")]
         public JsonResult EndTrip(int tripId, [FromQuery] long driverId)
         {
             try
@@ -71,7 +71,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("cancel/{tripId}")]
+        [HttpPut("cancel/{tripId}")]
         public JsonResult CancelTrip(int tripId, [FromQuery] long userId)
         {
             try

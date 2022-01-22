@@ -27,7 +27,6 @@ namespace API.Controllers
             {
                 return new JsonResult(new { error = exception.Message });
             }
-
         }
 
         [HttpPut("withdraw/{userId}")]
